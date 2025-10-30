@@ -11,7 +11,7 @@ export default function MovieCard({ movie }: { movie: Movie }) {
         <div
             onClick={() => navigate(`/movie/${movie.id}`)}
             className="w-[300px] h-max-[450px] relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
-            <FavoriteButton />
+            <FavoriteButton movie={movie} />
 
             <MoviePoster
                 src={movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : undefined}
