@@ -10,7 +10,7 @@ export default function MovieCard({ movie }: { movie: Movie }) {
     return (
         <div
             onClick={() => navigate(`/movie/${movie.id}`)}
-            className="w-[300px] h-max-[450px] relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
+            className="h-min-[450px] relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
             <FavoriteButton movie={movie} />
 
             <MoviePoster

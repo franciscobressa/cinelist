@@ -4,6 +4,7 @@ import type { Movie } from "../../services/moviesService";
 import MainLayout from "@/components/layouts/MainLayout";
 import MovieCard from "@/components/MovieCard";
 import LoadingDots from "@/components/shared/LoadingDots";
+import MovieListWrapper from "@/components/shared/MovieListWrapper";
 
 export default function Home() {
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -41,11 +42,11 @@ export default function Home() {
 
     return (
         <MainLayout>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <MovieListWrapper>
                 {movies.map((movie) => (
                     <MovieCard key={movie.id} movie={movie} />
                 ))}
-            </div>
+            </MovieListWrapper>
             {loading && (
                 <div className="text-center mt-15">
                     <LoadingDots />
