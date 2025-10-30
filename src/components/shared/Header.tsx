@@ -12,11 +12,10 @@ export default function Header() {
     return (
         <header
             className="
-        bg-gray-800 py-4 px-6
-        flex flex-col gap-4 items-center justify-center
-        md:flex-row md:justify-between md:gap-6
-        shadow-lg
-      "
+                bg-gray-800 py-4 px-6
+                flex flex-col gap-4 items-center justify-center
+                md:flex-row md:justify-between md:gap-6
+                shadow-lg"
         >
             <Logo />
             <SearchBar />

@@ -9,8 +9,10 @@ export type Movie = {
   vote_average: number;
 };
 
-export async function getPopularMovies(): Promise<Movie[]> {
-  const response = await api.get("/movie/popular");
+export async function getPopularMovies(page?: number): Promise<Movie[]> {
+  const response = await api.get("/movie/popular", {
+    params: { page },
+  });
   return response.data.results;
 }
 
