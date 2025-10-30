@@ -6,7 +6,7 @@ import MovieList from "@/components/shared/MovieList";
 import { useNavigate } from "react-router-dom";
 
 export default function Search() {
-    const { searchQuery, results, loading, hasMore, loadNextPage } = useAppContext();
+    const { searchQuery, results, loading, hasMore, loadNextPage, totalResults } = useAppContext();
     const navigate = useNavigate();
     const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -34,6 +34,7 @@ export default function Search() {
     return (
         <MainLayout>
             <Title>Resultados da busca: {searchQuery}</Title>
+            <p className="text-gray-300 mb-3">Encontramos <span className="font-semibold text-yellow-400">{totalResults}</span> filmes</p>
             <MovieList movies={results} loading={loading} sentinelRef={sentinelRef} />
         </MainLayout>
     );

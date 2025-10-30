@@ -21,6 +21,7 @@ type AppContextType = {
     hasMore: boolean;
     loadNextPage: () => Promise<void>;
     resetSearch: () => void;
+    totalResults: number;
     popular: Movie[];
     popularLoading: boolean;
     popularHasMore: boolean;
@@ -38,19 +39,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [totalResults, setTotalResults] = useState(0);
 
     const resetSearch = () => {
         setResults([]);
         setPage(1);
         setHasMore(true);
+        setTotalResults(0);
     };
 
     const loadNextPage = async () => {
         if (!searchQuery.trim() || loading || !hasMore) return;
         setLoading(true);
         const data = await searchMoviesServiceAPI(searchQuery, page);
-        setResults((prev) => [...prev, ...data]);
-        setHasMore(data.length > 0);
+        setResults((prev) => [...prev, ...data.results]);
+        setHasMore(data.results.length > 0);
+        setTotalResults(data.total_results || 0);
         setPage((p) => p + 1);
         setLoading(false);
     };
@@ -145,7 +149,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, sortBy, setSortBy, sortedFavorites, searchQuery, setSearchQuery, results, loading, hasMore, loadNextPage, resetSearch, popular, popularLoading, popularHasMore, loadNextPopularPage, resetPopular }}>
+        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, sortBy, setSortBy, sortedFavorites, searchQuery, setSearchQuery, results, loading, hasMore, loadNextPage, resetSearch, totalResults, popular, popularLoading, popularHasMore, loadNextPopularPage, resetPopular }}>
             {children}
         </AppContext.Provider>
     );

@@ -11,6 +11,11 @@ export type Movie = {
   genres?: { id: number; name: string }[];
 };
 
+export type SearchResponse = {
+  results: Movie[];
+  total_results: number;
+};
+
 export async function getPopularMovies(page?: number): Promise<Movie[]> {
   const response = await api.get("/movie/popular", {
     params: { page },
@@ -18,11 +23,11 @@ export async function getPopularMovies(page?: number): Promise<Movie[]> {
   return response.data.results;
 }
 
-export async function searchMovies(query: string, page?: number): Promise<Movie[]> {
+export async function searchMovies(query: string, page?: number): Promise<SearchResponse> {
   const response = await api.get("/search/movie", {
     params: { query, page },
   });
-  return response.data.results;
+  return { results: response.data.results, total_results: response.data.total_results };
 }
 
 export async function getMovieDetails(id: number): Promise<Movie> {
