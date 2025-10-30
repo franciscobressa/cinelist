@@ -3,10 +3,14 @@ import FavoriteButton from "./FavoriteButton";
 import MoviePoster from "./MoviePoster";
 import MovieTitle from "./MovieTitle";
 import RatingBadge from "./RatingBadge";
+import { useNavigate } from "react-router-dom";
 
 export default function MovieCard({ movie }: { movie: Movie }) {
+    const navigate = useNavigate();
     return (
-        <div className="relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+        <div
+            onClick={() => navigate(`/movie/${movie.id}`)}
+            className="w-[300px] h-max-[450px] relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
             <FavoriteButton />
 
             <MoviePoster

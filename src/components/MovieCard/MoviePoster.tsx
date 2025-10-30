@@ -4,12 +4,12 @@ export default function MoviePoster({ src, alt }: { src?: string; alt: string })
             <img
                 src={src}
                 alt={alt}
-                className="w-full h-75 object-cover"
+                className="w-[300px] h-[450px] object-cover"
             />
         );
     }
     return (
-        <div className="w-full h-75 flex items-center justify-center text-gray-400 text-sm bg-gray-700">
+        <div className="w-[300px] h-[450px] flex items-center justify-center text-gray-400 text-sm bg-gray-700">
             Poster do Filme
         </div>
     );

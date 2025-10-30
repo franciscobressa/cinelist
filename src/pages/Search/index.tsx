@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { searchMovies } from "../services/moviesService";
-import type { Movie } from "../services/moviesService";
+import { searchMovies } from "../../services/moviesService";
+import type { Movie } from "../../services/moviesService";
 
 export default function Search() {
     const [query, setQuery] = useState("");
@@ -41,3 +41,5 @@ export default function Search() {
         </div>
     );
 }
+
+

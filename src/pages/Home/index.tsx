@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { getPopularMovies } from "../services/moviesService";
-import type { Movie } from "../services/moviesService";
+import { getPopularMovies } from "../../services/moviesService";
+import type { Movie } from "../../services/moviesService";
 import MainLayout from "@/components/layouts/MainLayout";
 import MovieCard from "@/components/MovieCard";
 import LoadingDots from "@/components/shared/LoadingDots";
@@ -55,3 +55,5 @@ export default function Home() {
         </MainLayout>
     );
 }
+
+
