@@ -18,9 +18,9 @@ export async function getPopularMovies(page?: number): Promise<Movie[]> {
   return response.data.results;
 }
 
-export async function searchMovies(query: string): Promise<Movie[]> {
+export async function searchMovies(query: string, page?: number): Promise<Movie[]> {
   const response = await api.get("/search/movie", {
-    params: { query },
+    params: { query, page },
   });
   return response.data.results;
 }

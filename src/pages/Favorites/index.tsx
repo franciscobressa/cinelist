@@ -2,10 +2,9 @@ import { FilmIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useAppContext } from "@/context/AppContext";
-import MovieCard from "@/components/MovieCard";
 import Title from "@/components/shared/Title";
-import MovieListWrapper from "@/components/shared/MovieListWrapper";
 import SortSelector from "@/components/shared/SortSelector";
+import MovieList from "@/components/shared/MovieList";
 
 export default function FavoritesPage() {
     const navigate = useNavigate();
@@ -37,11 +36,7 @@ export default function FavoritesPage() {
         <MainLayout>
             <Title>Meus Filmes Favoritos</Title>
             <SortSelector />
-            <MovieListWrapper>
-                {sortedFavorites.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
-                ))}
-            </MovieListWrapper>
+            <MovieList movies={sortedFavorites} loading={false} />
         </MainLayout>
     );
 }

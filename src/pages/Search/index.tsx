@@ -1,21 +1,40 @@
+import { useEffect, useRef } from "react";
 import { useAppContext } from "@/context/AppContext";
-import MovieListWrapper from "@/components/shared/MovieListWrapper";
-import MovieCard from "@/components/MovieCard";
 import MainLayout from "@/components/layouts/MainLayout";
 import Title from "@/components/shared/Title";
+import MovieList from "@/components/shared/MovieList";
+import { useNavigate } from "react-router-dom";
 
 export default function Search() {
-    const { searchQuery } = useAppContext();
-    const { results } = useAppContext();
+    const { searchQuery, results, loading, hasMore, loadNextPage } = useAppContext();
+    const navigate = useNavigate();
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (!searchQuery.trim()) {
+            navigate("/");
+        }
+    }, [searchQuery]);
+
+    useEffect(() => {
+        if (!sentinelRef.current) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const [entry] = entries;
+                if (entry.isIntersecting && !loading && hasMore) {
+                    loadNextPage();
+                }
+            },
+            { root: null, rootMargin: "200px", threshold: 0 }
+        );
+        observer.observe(sentinelRef.current);
+        return () => observer.disconnect();
+    }, [loading, hasMore]);
 
     return (
         <MainLayout>
             <Title>Resultados da busca: {searchQuery}</Title>
-            <MovieListWrapper>
-                {results.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
-                ))}
-            </MovieListWrapper>
+            <MovieList movies={results} loading={loading} sentinelRef={sentinelRef} />
         </MainLayout>
     );
 }

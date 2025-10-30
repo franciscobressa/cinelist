@@ -1,7 +1,7 @@
 import type { Movie } from "@/services/moviesService";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { searchMovies as searchMoviesServiceAPI } from "@/services/moviesService";
+import { searchMovies as searchMoviesServiceAPI, getPopularMovies } from "@/services/moviesService";
 
 export type SortOption = "title" | "title-desc" | "rating" | "rating-desc" | "year" | "year-desc";
 
@@ -17,9 +17,15 @@ type AppContextType = {
     searchQuery: string;
     setSearchQuery: (query: string) => void;
     results: Movie[];
-    setResults: (results: Movie[]) => void;
-    searchMovies: (query: string) => void;
     loading: boolean;
+    hasMore: boolean;
+    loadNextPage: () => Promise<void>;
+    resetSearch: () => void;
+    popular: Movie[];
+    popularLoading: boolean;
+    popularHasMore: boolean;
+    loadNextPopularPage: () => Promise<void>;
+    resetPopular: () => void;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -30,17 +36,70 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const [searchQuery, setSearchQuery] = useState<string>("")
     const [results, setResults] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
-    const searchMovies = async (query: string) => {
+    const resetSearch = () => {
+        setResults([]);
+        setPage(1);
+        setHasMore(true);
+    };
+
+    const loadNextPage = async () => {
+        if (!searchQuery.trim() || loading || !hasMore) return;
         setLoading(true);
-        const data = await searchMoviesServiceAPI(query);
-        setResults(data);
+        const data = await searchMoviesServiceAPI(searchQuery, page);
+        setResults((prev) => [...prev, ...data]);
+        setHasMore(data.length > 0);
+        setPage((p) => p + 1);
         setLoading(false);
     };
 
     useEffect(() => {
-        searchMovies(searchQuery);
+        if (!searchQuery.trim()) {
+            setResults([]);
+            setHasMore(false);
+            setPage(1);
+            return;
+        }
+        // Whenever query changes, reset and load first page
+        resetSearch();
+        // Trigger initial load
+        loadNextPage();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchQuery]);
+
+    // Popular movies (Home) pagination
+    const [popular, setPopular] = useState<Movie[]>([]);
+    const [popularPage, setPopularPage] = useState(1);
+    const [popularLoading, setPopularLoading] = useState(false);
+    const [popularHasMore, setPopularHasMore] = useState(true);
+
+    const resetPopular = () => {
+        setPopular([]);
+        setPopularPage(1);
+        setPopularHasMore(true);
+    };
+
+    const loadNextPopularPage = async () => {
+        if (popularLoading || !popularHasMore) return;
+        setPopularLoading(true);
+        const data = await getPopularMovies(popularPage);
+        // artificial small delay to smooth UX
+        await new Promise((r) => setTimeout(r, 500));
+        setPopular((prev) => [...prev, ...data]);
+        setPopularHasMore(data.length > 0);
+        setPopularPage((p) => p + 1);
+        setPopularLoading(false);
+    };
+
+    // initial load for home
+    useEffect(() => {
+        if (popular.length === 0 && !popularLoading) {
+            loadNextPopularPage();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const addFavorite = (favorite: Movie) => {
         if (!favorites.some((f) => f.id === favorite.id)) {
@@ -86,7 +145,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, sortBy, setSortBy, sortedFavorites, searchQuery, setSearchQuery, results, setResults, searchMovies, loading }}>
+        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, sortBy, setSortBy, sortedFavorites, searchQuery, setSearchQuery, results, loading, hasMore, loadNextPage, resetSearch, popular, popularLoading, popularHasMore, loadNextPopularPage, resetPopular }}>
             {children}
         </AppContext.Provider>
     );
