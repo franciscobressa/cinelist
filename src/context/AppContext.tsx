@@ -1,6 +1,8 @@
 import type { Movie } from "@/services/moviesService";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+
+export type SortOption = "title" | "title-desc" | "rating" | "rating-desc" | "year" | "year-desc";
 
 type AppContextType = {
     favorites: Movie[];
@@ -8,13 +10,16 @@ type AppContextType = {
     removeFavorite: (id: number) => void;
     toggleFavorite: (movie: Movie) => void;
     isFavorite: (id: number) => boolean;
+    sortBy: SortOption;
+    setSortBy: (sort: SortOption) => void;
+    sortedFavorites: Movie[];
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-
     const [favorites, setFavorites] = useState<Movie[]>([]);
+    const [sortBy, setSortBy] = useState<SortOption>("title");
 
     const addFavorite = (favorite: Movie) => {
         if (!favorites.some((f) => f.id === favorite.id)) {
@@ -38,8 +43,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
         return favorites.some((favorite) => favorite.id === id);
     };
 
+    const sortedFavorites = useMemo(() => {
+        const sorted = [...favorites];
+        switch (sortBy) {
+            case "title":
+                return sorted.sort((a, b) => a.title.localeCompare(b.title));
+            case "title-desc":
+                return sorted.sort((a, b) => b.title.localeCompare(a.title));
+            case "rating":
+                return sorted.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
+            case "rating-desc":
+                return sorted.sort((a, b) => (a.vote_average || 0) - (b.vote_average || 0));
+            case "year":
+                return sorted.sort((a, b) => a.release_date.localeCompare(b.release_date));
+            case "year-desc":
+                return sorted.sort((a, b) => b.release_date.localeCompare(a.release_date));
+            default:
+                return sorted;
+        }
+    }, [favorites, sortBy]);
+
     return (
-        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite }}>
+        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, sortBy, setSortBy, sortedFavorites }}>
             {children}
         </AppContext.Provider>
     );

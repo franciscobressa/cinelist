@@ -5,10 +5,11 @@ import { useAppContext } from "@/context/AppContext";
 import MovieCard from "@/components/MovieCard";
 import Title from "@/components/shared/Title";
 import MovieListWrapper from "@/components/shared/MovieListWrapper";
+import SortSelector from "@/components/shared/SortSelector";
 
 export default function FavoritesPage() {
     const navigate = useNavigate();
-    const { favorites } = useAppContext();
+    const { favorites, sortedFavorites } = useAppContext();
 
     if (favorites.length === 0) {
         return (
@@ -35,8 +36,9 @@ export default function FavoritesPage() {
     return (
         <MainLayout>
             <Title>Meus Filmes Favoritos</Title>
+            <SortSelector />
             <MovieListWrapper>
-                {favorites.map((movie) => (
+                {sortedFavorites.map((movie) => (
                     <MovieCard key={movie.id} movie={movie} />
                 ))}
             </MovieListWrapper>
