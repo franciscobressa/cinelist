@@ -1,6 +1,7 @@
 import type { Movie } from "@/services/moviesService";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { searchMovies as searchMoviesServiceAPI } from "@/services/moviesService";
 
 export type SortOption = "title" | "title-desc" | "rating" | "rating-desc" | "year" | "year-desc";
 
@@ -13,6 +14,12 @@ type AppContextType = {
     sortBy: SortOption;
     setSortBy: (sort: SortOption) => void;
     sortedFavorites: Movie[];
+    searchQuery: string;
+    setSearchQuery: (query: string) => void;
+    results: Movie[];
+    setResults: (results: Movie[]) => void;
+    searchMovies: (query: string) => void;
+    loading: boolean;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -20,6 +27,20 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: ReactNode }) {
     const [favorites, setFavorites] = useState<Movie[]>([]);
     const [sortBy, setSortBy] = useState<SortOption>("title");
+    const [searchQuery, setSearchQuery] = useState<string>("")
+    const [results, setResults] = useState<Movie[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    const searchMovies = async (query: string) => {
+        setLoading(true);
+        const data = await searchMoviesServiceAPI(query);
+        setResults(data);
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        searchMovies(searchQuery);
+    }, [searchQuery]);
 
     const addFavorite = (favorite: Movie) => {
         if (!favorites.some((f) => f.id === favorite.id)) {
@@ -63,8 +84,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
     }, [favorites, sortBy]);
 
+
     return (
-        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, sortBy, setSortBy, sortedFavorites }}>
+        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, sortBy, setSortBy, sortedFavorites, searchQuery, setSearchQuery, results, setResults, searchMovies, loading }}>
             {children}
         </AppContext.Provider>
     );
