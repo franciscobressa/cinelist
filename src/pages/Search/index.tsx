@@ -34,8 +34,17 @@ export default function Search() {
     return (
         <MainLayout>
             <Title>Resultados da busca: {searchQuery}</Title>
-            <p className="text-gray-300 mb-3">Encontramos <span className="font-semibold text-yellow-400">{totalResults}</span> filmes</p>
-            <MovieList movies={results} loading={loading} sentinelRef={sentinelRef} />
+            {results.length > 0 && (
+                <p className="text-gray-300 mb-3">
+                    Encontramos <span className="font-semibold text-yellow-400">{totalResults}</span> filmes
+                </p>
+            )}
+            <MovieList 
+                movies={results} 
+                loading={loading} 
+                sentinelRef={sentinelRef}
+                showSkeletons={true}
+            />
         </MainLayout>
     );
 }

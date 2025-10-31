@@ -24,7 +24,12 @@ export default function Home() {
 
     return (
         <MainLayout>
-            <MovieList movies={popular} loading={popularLoading} sentinelRef={sentinelRef} />
+            <MovieList 
+                movies={popular} 
+                loading={popularLoading} 
+                sentinelRef={sentinelRef}
+                showSkeletons={true}
+            />
         </MainLayout>
     );
 }
