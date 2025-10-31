@@ -18,6 +18,13 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
   <AppProvider>{children}</AppProvider>
 );
 
+const flushPendingTimers = async () => {
+  await act(async () => {
+    jest.runOnlyPendingTimers();
+    await Promise.resolve();
+  });
+};
+
 const movie = {
   id: 1,
   title: "Matrix",
@@ -38,11 +45,11 @@ describe("AppContext", () => {
       results: [movie],
       total_results: 1,
     });
-    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => { });
   });
 
-  afterEach(() => {
-    jest.runOnlyPendingTimers();
+  afterEach(async () => {
+    await flushPendingTimers();
     jest.useRealTimers();
     consoleErrorSpy.mockRestore();
   });
@@ -68,10 +75,6 @@ describe("AppContext", () => {
   it("should fetch search results when loadNextPage is called", async () => {
     const { result } = renderHook(() => useAppContext(), { wrapper });
 
-    act(() => {
-      jest.runOnlyPendingTimers();
-    });
-
     await act(async () => {
       result.current.setSearchQuery("matrix");
     });
@@ -90,10 +93,6 @@ describe("AppContext", () => {
 
   it("should load popular movies when requested", async () => {
     const { result } = renderHook(() => useAppContext(), { wrapper });
-
-    act(() => {
-      jest.runOnlyPendingTimers();
-    });
 
     await act(async () => {
       const promise = result.current.loadNextPopularPage();
