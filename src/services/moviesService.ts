@@ -16,21 +16,23 @@ export type SearchResponse = {
   total_results: number;
 };
 
-export async function getPopularMovies(page?: number): Promise<Movie[]> {
+export async function getPopularMovies(page?: number, signal?: AbortSignal): Promise<Movie[]> {
   const response = await api.get("/movie/popular", {
     params: { page },
+    signal,
   });
   return response.data.results;
 }
 
-export async function searchMovies(query: string, page?: number): Promise<SearchResponse> {
+export async function searchMovies(query: string, page?: number, signal?: AbortSignal): Promise<SearchResponse> {
   const response = await api.get("/search/movie", {
     params: { query, page },
+    signal,
   });
   return { results: response.data.results, total_results: response.data.total_results };
 }
 
-export async function getMovieDetails(id: number): Promise<Movie> {
-  const response = await api.get(`/movie/${id}`);
+export async function getMovieDetails(id: number, signal?: AbortSignal): Promise<Movie> {
+  const response = await api.get(`/movie/${id}`, { signal });
   return response.data;
 }
