@@ -69,7 +69,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
             setResults((prev) => [...prev, ...data.results]);
             setHasMore(data.results.length > 0);
             setTotalResults(data.total_results || 0);
-            setPage((p) => p + 1);
+            if (data.results.length === 0) {
+                setHasMore(false);
+            } else {
+                setPage((p) => p + 1);
+            }
         } catch (error: any) {
             if (error.name === 'CanceledError' || error.name === 'AbortError') {
                 return;
@@ -82,13 +86,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
 
     useEffect(() => {
-        if (!debouncedSearchQuery.trim()) {
-            setResults([]);
-            setHasMore(false);
-            setPage(1);
-            return;
-        }
+        setResults([]);
+        setHasMore(false);
+        setPage(1);
+    }, [searchQuery])
 
+    useEffect(() => {
         const controller = new AbortController();
 
         resetSearch();
