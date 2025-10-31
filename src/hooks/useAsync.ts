@@ -29,19 +29,28 @@ export function useAsync<T>(
       try {
         const data = await asyncFunction(signal);
 
-        if (signal.aborted) return;
+        if (signal.aborted) {
+          return;
+        }
 
         setState({ data, loading: false, error: null });
         return data;
       } catch (error: any) {
-        if (error.name === "CanceledError" || error.name === "AbortError") {
+        const isAbortError =
+          error?.name === "CanceledError" ||
+          error?.name === "AbortError" ||
+          signal.aborted;
+
+        if (isAbortError) {
           return;
         }
 
-        if (!signal.aborted) {
-          setState({ data: null, loading: false, error });
-        }
+        setState({ data: null, loading: false, error });
         throw error;
+      } finally {
+        if (signal.aborted) {
+          setState((prev) => ({ ...prev, loading: false }));
+        }
       }
     },
     [asyncFunction]
@@ -51,7 +60,7 @@ export function useAsync<T>(
     if (!immediate) return;
 
     const controller = new AbortController();
-    execute(controller.signal);
+    execute(controller.signal).catch(() => {});
 
     return () => {
       controller.abort();

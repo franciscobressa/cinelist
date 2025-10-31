@@ -28,6 +28,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     }
 
     render() {
+        const isDev = Boolean((globalThis as any)?.process?.env?.NODE_ENV !== "production");
         if (this.state.hasError) {
             if (this.props.fallback) {
                 return this.props.fallback;
@@ -57,7 +58,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                         <p className="text-gray-400 mb-6">
                             Ocorreu um erro inesperado. Tente recarregar a página.
                         </p>
-                        {import.meta.env.DEV && this.state.error && (
+                        {isDev && this.state.error && (
                             <details className="text-left mb-4 bg-gray-800 rounded p-4">
                                 <summary className="cursor-pointer text-red-400 font-mono text-sm mb-2">
                                     Detalhes do erro (dev only)

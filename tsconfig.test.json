@@ -3,7 +3,7 @@
   "compilerOptions": {
     "types": ["jest", "node", "vite/client", "@testing-library/jest-dom"],
     "jsx": "react-jsx",
-    "module": "CommonJS",
+    "module": "es2020",
     "moduleResolution": "node",
     "verbatimModuleSyntax": false,
     "esModuleInterop": true
