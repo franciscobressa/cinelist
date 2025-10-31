@@ -30,11 +30,11 @@ export default function SearchBar() {
     }, [location.pathname]);
 
     return (
-        <div className="relative flex items-center w-75 max-w-md mx-auto">
+        <div className="relative flex w-full items-center">
             <input
                 type="text"
                 placeholder="Buscar filmes..."
-                className="w-full bg-gray-900 border-2 border-gray-700 py-2 pl-4 rounded-full text-white placeholder-gray-400 focus:outline-none  focus:border-gray-600 transition-all"
+                className="w-full rounded-full border-2 border-gray-700 bg-gray-900 py-2 pl-4 text-white placeholder-gray-400 transition-all focus:border-gray-600 focus:outline-none"
                 ref={inputRef}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
