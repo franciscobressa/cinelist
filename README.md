@@ -1,73 +1,98 @@
-# React + TypeScript + Vite
+# CineList
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação React para explorar filmes usando a API do The Movie Database (TMDB), favoritar títulos e descobrir novos conteúdos.
 
-Currently, two official plugins are available:
+## 🌐 Deploy
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Aplicação disponível em: [https://cinelist.franciscobressa.dev/](https://cinelist.franciscobressa.dev/)
 
-## React Compiler
+## 🚀 Tecnologias
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 18 + TypeScript
+- Vite
+- React Router DOM 7
+- Context API
+- Axios
+- Jest + React Testing Library
+- Tailwind CSS (via classes utilitárias)
 
-## Expanding the ESLint configuration
+## 📦 Pré-requisitos
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js 18+
+- Conta e token da API TMDB (Bearer Token v4)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🔧 Configuração
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. Clone o repositório:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/franciscobressa/cinelist.git
+cd cinelist
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Instale as dependências:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+3. Configure as variáveis de ambiente:
+
+```bash
+cp .env-example .env
+# edite o arquivo .env e informe seu VITE_TMDB_TOKEN
+```
+
+4. Execute em modo desenvolvimento:
+
+```bash
+npm run dev
+```
+
+5. Build de produção:
+
+```bash
+npm run build
+npm run preview
+```
+
+6. Testes unitários:
+
+```bash
+npm run test
+```
+
+## 📱 Funcionalidades
+
+- **Home**: filmes populares com scroll infinito, destaque de favoritos e nota TMDB.
+- **Detalhes**: informações completas do filme com poster/backdrop, gêneros, sinopse e botão de favoritar.
+- **Favoritos**: grid dos filmes salvos, ordenação por título e nota, estado vazio amigável.
+- **Busca**: pesquisa global integrada ao header, com realce do termo nos resultados e carregamento paginado.
+
+## 🛠️ Estrutura
+
+- `src/context/AppContext.tsx`: estado global (favoritos, busca, populares).
+- `src/services/moviesService.ts`: consumo da API TMDB.
+- `src/hooks/`: hooks customizados (`useLocalStorage`, `useDebounce`, `useAsync`).
+- `src/components/`: componentes compartilhados e específicos.
+- `src/pages/`: Home, Favorties, Search e MovieDetailsPage.
+- `src/tests/`: cobertura ampla com Jest/RTL.
+
+## 🧪 Cobertura de Testes
+
+- Hooks customizados
+- Providers (Toast, AppContext)
+- Componentes principais (cards, header, listas, modais)
+- Utilitários (`formatDate`)
+
+## 🧩 Variáveis de ambiente
+
+| Chave             | Descrição                        |
+| ----------------- | -------------------------------- |
+| `VITE_TMDB_TOKEN` | Bearer token (v4) da API do TMDB |
+
+`VITE_TMDB_BASE_URL` já está definido no `.env-example` como `https://api.themoviedb.org/3`.
+
+## 📄 Licença
+
+Este projeto foi desenvolvido para fins de avaliação técnica.
