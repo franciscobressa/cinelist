@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { searchMovies as searchMoviesServiceAPI, getPopularMovies } from "@/services/moviesService";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useDebounce } from "@/hooks/useDebounce";
-
+import { useToast } from "@/context/ToastContext";
 export type SortOption = "title" | "title-desc" | "rating" | "rating-desc" | "year" | "year-desc";
 
 type AppContextType = {
@@ -27,13 +27,17 @@ type AppContextType = {
     popular: Movie[];
     popularLoading: boolean;
     popularHasMore: boolean;
+    popularError: boolean;
     loadNextPopularPage: (signal?: AbortSignal) => Promise<void>;
     resetPopular: () => void;
+    searchError: boolean;
+    setSearchError: (error: boolean) => void;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+    const { showToast } = useToast();
     const [favorites, setFavorites] = useLocalStorage<Movie[]>(
         'cinelist-favorites',
         []
@@ -51,20 +55,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [totalResults, setTotalResults] = useState(0);
+    const [searchError, setSearchError] = useState(false);
 
     const resetSearch = () => {
         setResults([]);
         setPage(1);
         setHasMore(true);
         setTotalResults(0);
+        setSearchError(false);
     };
 
-    const loadNextPage = async (signal?: AbortSignal) => {
-        if (!debouncedSearchQuery.trim() || loading || !hasMore) return;
+    const loadNextPage = async () => {
+        if (!debouncedSearchQuery.trim() || loading || !hasMore || searchError) return;
         setLoading(true);
         try {
-            const data = await searchMoviesServiceAPI(debouncedSearchQuery, page, signal);
-            if (signal?.aborted) return;
+            const data = await searchMoviesServiceAPI(debouncedSearchQuery, page);
 
             setResults((prev) => [...prev, ...data.results]);
             setHasMore(data.results.length > 0);
@@ -75,80 +80,58 @@ export function AppProvider({ children }: { children: ReactNode }) {
                 setPage((p) => p + 1);
             }
         } catch (error: any) {
+            showToast("Erro ao buscar filmes", "error");
+            setSearchError(true);
             if (error.name === 'CanceledError' || error.name === 'AbortError') {
                 return;
             }
         } finally {
-            if (!signal?.aborted) {
-                setLoading(false);
-            }
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        setResults([]);
-        setHasMore(false);
-        setPage(1);
-    }, [searchQuery])
+        resetSearch();
+    }, [searchQuery]);
 
     useEffect(() => {
-        const controller = new AbortController();
-
-        resetSearch();
-        loadNextPage(controller.signal);
-
-        return () => {
-            controller.abort();
-        };
+        loadNextPage();
     }, [debouncedSearchQuery]);
 
     const [popular, setPopular] = useState<Movie[]>([]);
     const [popularPage, setPopularPage] = useState(1);
     const [popularLoading, setPopularLoading] = useState(false);
     const [popularHasMore, setPopularHasMore] = useState(true);
+    const [popularError, setPopularError] = useState(false);
 
     const resetPopular = () => {
         setPopular([]);
         setPopularPage(1);
         setPopularHasMore(true);
+        setPopularError(false);
     };
 
-    const loadNextPopularPage = async (signal?: AbortSignal) => {
+    const loadNextPopularPage = async () => {
         if (popularLoading || !popularHasMore) return;
         setPopularLoading(true);
         try {
-            const data = await getPopularMovies(popularPage, signal);
-
-            if (signal?.aborted) return;
-
-            await new Promise((r) => setTimeout(r, 500));
-
-            if (signal?.aborted) return;
+            const data = await getPopularMovies(popularPage);
 
             setPopular((prev) => [...prev, ...data]);
             setPopularHasMore(data.length > 0);
             setPopularPage((p) => p + 1);
         } catch (error: any) {
+            showToast("Erro ao buscar filmes populares", "error");
+            setPopularError(true);
             if (error.name === 'CanceledError' || error.name === 'AbortError') {
                 return;
             }
         } finally {
-            if (!signal?.aborted) {
-                setPopularLoading(false);
-            }
+            setPopularLoading(false);
         }
     };
 
-    useEffect(() => {
-        if (popular.length === 0 && !popularLoading) {
-            const controller = new AbortController();
-            loadNextPopularPage(controller.signal);
 
-            return () => {
-                controller.abort();
-            };
-        }
-    }, []);
 
     const addFavorite = (favorite: Movie) => {
         if (!favorites.some((f) => f.id === favorite.id)) {
@@ -195,7 +178,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, sortBy, setSortBy, sortedFavorites, searchQuery, setSearchQuery, results, loading, hasMore, loadNextPage, resetSearch, totalResults, popular, popularLoading, popularHasMore, loadNextPopularPage, resetPopular }}>
+        <AppContext.Provider value={{ favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, sortBy, setSortBy, sortedFavorites, searchQuery, setSearchQuery, results, loading, hasMore, loadNextPage, resetSearch, totalResults, popular, popularLoading, popularHasMore, popularError, loadNextPopularPage, resetPopular, searchError, setSearchError }}>
             {children}
         </AppContext.Provider>
     );

@@ -13,7 +13,7 @@ export default function ErrorMessage({
   onRetry,
 }: ErrorMessageProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4">
+    <div className="flex flex-col items-center justify-center mt-12 mb-3 px-4">
       <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
         <svg
           className="w-8 h-8 text-red-500"
