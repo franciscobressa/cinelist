@@ -3,6 +3,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import MovieList from "@/components/shared/MovieList";
 import { useAppContext } from "@/context/AppContext";
 import ErrorMessage from "@/components/shared/ErrorMessage";
+import ActionButton from "@/components/shared/ActionButton";
 
 export default function Home() {
     const { popular, popularLoading, popularHasMore, loadNextPopularPage, popularError, resetPopular } = useAppContext();
@@ -29,12 +30,14 @@ export default function Home() {
             <MainLayout>
                 <div className="flex flex-col items-center justify-center">
                     <ErrorMessage title="Erro ao buscar filmes populares" message="Não foi possível buscar os filmes populares. Tente novamente." />
-                    <button
-                        className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2"
+                    <ActionButton
                         onClick={() => {
                             resetPopular();
                             loadNextPopularPage();
-                        }}>Tentar Novamente</button>
+                        }}
+                    >
+                        Tentar Novamente
+                    </ActionButton>
                 </div>
             </MainLayout>
         );

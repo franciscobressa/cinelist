@@ -5,6 +5,7 @@ import { useAppContext } from "@/context/AppContext";
 import Title from "@/components/shared/Title";
 import SortSelector from "@/components/shared/SortSelector";
 import MovieList from "@/components/shared/MovieList";
+import ActionButton from "@/components/shared/ActionButton";
 
 export default function FavoritesPage() {
     const navigate = useNavigate();
@@ -21,12 +22,9 @@ export default function FavoritesPage() {
                         <h1 className="text-2xl font-semibold text-gray-300 mb-2">Nenhum filme favorito ainda</h1>
                         <p className="text-gray-400">Comece explorando filmes populares e adicione seus favoritos!</p>
                     </div>
-                    <button
-                        onClick={() => navigate("/")}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-                    >
+                    <ActionButton onClick={() => navigate("/")}>
                         Explorar Filmes
-                    </button>
+                    </ActionButton>
                 </div>
             </MainLayout>
         );

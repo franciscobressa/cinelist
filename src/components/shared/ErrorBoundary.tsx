@@ -1,4 +1,5 @@
 import { Component, type ReactNode } from "react";
+import ActionButton from "./ActionButton";
 
 interface Props {
     children: ReactNode;
@@ -70,12 +71,9 @@ export default class ErrorBoundary extends Component<Props, State> {
                                 </pre>
                             </details>
                         )}
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-                        >
+                        <ActionButton onClick={() => window.location.reload()}>
                             Recarregar Página
-                        </button>
+                        </ActionButton>
                     </div>
                 </div>
             );

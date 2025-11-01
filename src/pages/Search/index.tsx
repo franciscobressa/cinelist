@@ -5,6 +5,7 @@ import Title from "@/components/shared/Title";
 import MovieList from "@/components/shared/MovieList";
 import { useNavigate } from "react-router-dom";
 import ErrorMessage from "@/components/shared/ErrorMessage";
+import ActionButton from "@/components/shared/ActionButton";
 
 export default function Search() {
     const { searchQuery, results, loading, hasMore, loadNextPage, totalResults, searchError } = useAppContext();
@@ -37,11 +38,9 @@ export default function Search() {
             <MainLayout>
                 <div className="flex flex-col items-center justify-center">
                     <ErrorMessage title="Erro ao buscar filmes" message="Não foi possível buscar os filmes." />
-                    <button
-                        className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2"
-                        onClick={() =>
-                            navigate("/")
-                        }>Voltar</button>
+                    <ActionButton onClick={() => navigate("/")}>
+                        Voltar
+                    </ActionButton>
                 </div>
             </MainLayout >
         );

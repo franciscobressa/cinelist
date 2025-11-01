@@ -1,12 +1,11 @@
+import ActionButton from "./ActionButton";
+
 interface ErrorMessageProps {
   message?: string;
   onRetry?: () => void;
   title?: string;
 }
 
-/**
- * Generic error message component with optional retry button
- */
 export default function ErrorMessage({
   message = "Ocorreu um erro ao carregar os dados.",
   title = "Erro",
@@ -32,7 +31,7 @@ export default function ErrorMessage({
       <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
       <p className="text-gray-400 text-center mb-6 max-w-md">{message}</p>
       {onRetry && (
-        <button
+        <ActionButton
           onClick={onRetry}
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2"
         >
@@ -50,7 +49,7 @@ export default function ErrorMessage({
             />
           </svg>
           Tentar Novamente
-        </button>
+        </ActionButton>
       )}
     </div>
   );
