@@ -30,7 +30,10 @@ export default function MovieDetailsPage() {
           title="Erro ao carregar filme"
           message="Não foi possível carregar os detalhes do filme. Tente novamente."
           onRetry={() => {
-            execute(new AbortController().signal).catch(() => { });
+            const promise = execute(new AbortController().signal);
+            if (promise?.catch) {
+              promise.catch(() => { });
+            }
           }}
         />
       )}
