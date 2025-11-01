@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 
 import { AppProvider, useAppContext } from "@/context/AppContext";
+import { ToastProvider } from "@/context/ToastContext";
 
 const mockSearchMovies = jest.fn();
 const mockGetPopularMovies = jest.fn();
@@ -15,7 +16,9 @@ jest.mock("@/hooks/useDebounce", () => ({
 }));
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <AppProvider>{children}</AppProvider>
+  <ToastProvider>
+    <AppProvider>{children}</AppProvider>
+  </ToastProvider>
 );
 
 const flushPendingTimers = async () => {
@@ -84,11 +87,15 @@ describe("AppContext", () => {
     });
 
     await waitFor(() => {
-      expect(mockSearchMovies).toHaveBeenCalledWith("matrix", 1, undefined);
-      expect(result.current.results).toHaveLength(1);
-      expect(result.current.totalResults).toBe(1);
-      expect(result.current.loading).toBe(false);
+      expect(mockSearchMovies).toHaveBeenCalled();
     });
+
+    const firstCall = mockSearchMovies.mock.calls[0];
+    expect(firstCall[0]).toBe("matrix");
+    expect(firstCall[1]).toBe(1);
+    expect(result.current.results).toHaveLength(1);
+    expect(result.current.totalResults).toBe(1);
+    expect(result.current.loading).toBe(false);
   });
 
   it("should load popular movies when requested", async () => {

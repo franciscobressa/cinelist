@@ -10,9 +10,9 @@ export default function MovieDetailsPage() {
   const { id } = useParams<{ id: string }>();
 
   const { data: movie, loading, error, execute } = useAsync(
-    async (signal) => {
+    async () => {
       if (!id) throw new Error("ID do filme não encontrado");
-      return await getMovieDetails(Number(id), signal);
+      return await getMovieDetails(Number(id));
     },
     [id]
   );
@@ -30,8 +30,7 @@ export default function MovieDetailsPage() {
           title="Erro ao carregar filme"
           message="Não foi possível carregar os detalhes do filme. Tente novamente."
           onRetry={() => {
-            const controller = new AbortController();
-            execute(controller.signal);
+            execute(new AbortController().signal).catch(() => { });
           }}
         />
       )}

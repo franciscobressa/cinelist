@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import ErrorMessage from "@/components/shared/ErrorMessage";
 
 export default function Search() {
-    const { searchQuery, results, loading, hasMore, loadNextPage, totalResults, searchError, setSearchError } = useAppContext();
+    const { searchQuery, results, loading, hasMore, loadNextPage, totalResults, searchError } = useAppContext();
     const navigate = useNavigate();
     const sentinelRef = useRef<HTMLDivElement | null>(null);
 
